@@ -4,7 +4,7 @@ import {
   isPlainObject,
   isEqual
 } from 'lodash'
-import SenecaMergePayload from '../src/index'
+import SenecaMergePayload from '../index'
 import Mock from './mock'
 const lab = exports.lab = script()
 const describe = lab.describe
