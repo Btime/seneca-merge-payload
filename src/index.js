@@ -3,16 +3,27 @@ import {
   isArray,
   merge,
   uniq,
-  keys
+  keys,
+  pick
 } from 'lodash'
+import Joi from 'joi'
+import Schema from './schema'
+const PICK_FIELDS = [
+  'user',
+  'requestOptions'
+]
 const FILTER_OPERATOR = '$and'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
-export default function SenecaMergePayload (payload, options) {
-  if (!isPlainObject(payload)) {
+export default function SenecaMergePayload (payload, params) {
+  const isValid = Joi.validate(pick(params, PICK_FIELDS), Schema)
+
+  if (!isPlainObject(payload) || isValid.error) {
     return payload
   }
+  const options = params.requestOptions
+  const user = params.user
 
   if (!isPlainObject(options)) {
     return payload
@@ -26,16 +37,22 @@ export default function SenecaMergePayload (payload, options) {
     })
   }
 
+  const where = {}
+
+  if (user && user.providerId) {
+    where.providerId = user.providerId
+  }
+
   if (isPlainObject(options.filters) && keys(options.filters).length) {
-    const where = {}
     where[FILTER_OPERATOR] = []
     for (let key in options.filters) {
       let clause = {}
       clause[key] = options.filters[key]
       where[FILTER_OPERATOR].push(clause)
     }
-    payload = merge(payload, { where })
   }
+
+  payload = merge(payload, { where })
 
   if (isPlainObject(options.paginate)) {
     const page = options.paginate.page || DEFAULT_PAGE

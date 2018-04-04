@@ -7,7 +7,7 @@
     "start": "echo \"no entry point\"",
     "test": "npm run lab",
     "lab": "lab -v test/*.test.js -T node_modules/lab-babel --leaks --timeout 555555",
-    "build": "babel ./src/index.js -o ./dist/index.js --presets es2015"
+    "build": "babel ./src -d ./dist --presets es2015"
   },
   "husky": {
     "hooks": {

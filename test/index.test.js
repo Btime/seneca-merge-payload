@@ -14,7 +14,7 @@ describe('Seneca Merge Payload', () => {
   it('Expect merge validate values with requestOptions',
     () => {
       const payload = Mock.payload
-      const result = SenecaMergePayload(payload.values, payload.requestOptions)
+      const result = SenecaMergePayload(payload.values, payload)
       expect(isPlainObject(result)).to.be.equal(true)
       expect(isEqual(result, Mock.expected)).to.be.equal(true)
     })

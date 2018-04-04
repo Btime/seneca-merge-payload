@@ -6,11 +6,15 @@ export default {
       },
       attributes: ['name']
     },
+    user: {
+      id: 1,
+      name: 'Felipe Barros',
+      providerId: 1
+    },
     requestOptions: {
       fields: ['email'],
       filters: {
-        email: 'felipebarroscruz@btime.com.br',
-        provider: 33
+        email: 'felipebarroscruz@btime.com.br'
       },
       paginate: {
         page: 1,
@@ -21,12 +25,10 @@ export default {
   expected: {
     where: {
       name: 'Felipe Barros Cruz',
+      providerId: 1,
       $and: [
         {
           email: 'felipebarroscruz@btime.com.br'
-        },
-        {
-          provider: 33
         }
       ]
     },
