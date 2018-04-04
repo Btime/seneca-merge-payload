@@ -26,7 +26,7 @@ export default {
       ),
 
     paginate: Joi.object()
-      .required()
+      .optional()
       .keys({
         page: Joi.number().integer(),
         limit: Joi.number().integer()
