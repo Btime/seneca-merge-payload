@@ -1,5 +1,6 @@
 import {
   isPlainObject,
+  isFunction,
   isArray,
   merge,
   uniq,
@@ -16,12 +17,7 @@ const FILTER_OPERATOR = '$and'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
-export default function SenecaMergePayload (payload, params) {
-  const isValid = Joi.validate(pick(params, PICK_FIELDS), Schema)
-
-  if (!isPlainObject(payload) || isValid.error) {
-    return payload
-  }
+const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions
   const user = params.user
 
@@ -63,3 +59,35 @@ export default function SenecaMergePayload (payload, params) {
 
   return payload
 }
+
+const upsertMergePayload = (payload, params) => {
+  const { user } = params
+
+  if (user && user.providerId) {
+    payload.providerId = payload.providerId || user.providerId
+  }
+
+  return payload
+}
+
+const SenecaMergePayload = (payload, params, method = 'default') => {
+  const isValid = Joi.validate(pick(params, PICK_FIELDS), Schema)
+
+  if (!isPlainObject(payload) || isValid.error) {
+    return payload
+  }
+
+  const mergeMap = {
+    default: defaultMergePayload,
+    upsert: upsertMergePayload
+  }
+  const caller = mergeMap[method]
+
+  if (!isFunction(caller)) {
+    return payload
+  }
+
+  return caller(payload, params)
+}
+
+export default SenecaMergePayload

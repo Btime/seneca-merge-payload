@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = SenecaMergePayload;
 
 var _lodash = require('lodash');
 
@@ -22,12 +21,7 @@ var FILTER_OPERATOR = '$and';
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
 
-function SenecaMergePayload(payload, params) {
-  var isValid = _joi2.default.validate((0, _lodash.pick)(params, PICK_FIELDS), _schema2.default);
-
-  if (!(0, _lodash.isPlainObject)(payload) || isValid.error) {
-    return payload;
-  }
+var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions;
   var user = params.user;
 
@@ -66,4 +60,39 @@ function SenecaMergePayload(payload, params) {
   }
 
   return payload;
-}
+};
+
+var upsertMergePayload = function upsertMergePayload(payload, params) {
+  var user = params.user;
+
+
+  if (user && user.providerId) {
+    payload.providerId = payload.providerId || user.providerId;
+  }
+
+  return payload;
+};
+
+var SenecaMergePayload = function SenecaMergePayload(payload, params) {
+  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'default';
+
+  var isValid = _joi2.default.validate((0, _lodash.pick)(params, PICK_FIELDS), _schema2.default);
+
+  if (!(0, _lodash.isPlainObject)(payload) || isValid.error) {
+    return payload;
+  }
+
+  var mergeMap = {
+    default: defaultMergePayload,
+    upsert: upsertMergePayload
+  };
+  var caller = mergeMap[method];
+
+  if (!(0, _lodash.isFunction)(caller)) {
+    return payload;
+  }
+
+  return caller(payload, params);
+};
+
+exports.default = SenecaMergePayload;

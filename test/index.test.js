@@ -11,11 +11,19 @@ const describe = lab.describe
 const it = lab.it
 
 describe('Seneca Merge Payload', () => {
-  it('Expect merge validate values with requestOptions',
+  it('Expect merge validate with default method and requestOptions',
     () => {
-      const payload = Mock.payload
+      const payload = Mock.default.payload
       const result = SenecaMergePayload(payload.values, payload)
       expect(isPlainObject(result)).to.be.equal(true)
-      expect(isEqual(result, Mock.expected)).to.be.equal(true)
+      expect(isEqual(result, Mock.default.expected)).to.be.equal(true)
+    })
+
+  it('Expect merge validate with upsert method and requestOptions',
+    () => {
+      const payload = Mock.upsert.payload
+      const result = SenecaMergePayload(payload.values, payload, 'upsert')
+      expect(isPlainObject(result)).to.be.equal(true)
+      expect(isEqual(result, Mock.upsert.expected)).to.be.equal(true)
     })
 })

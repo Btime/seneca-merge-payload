@@ -1,39 +1,63 @@
 export default {
-  payload: {
-    values: {
-      where: {
-        name: 'Felipe Barros Cruz'
+  default: {
+    payload: {
+      values: {
+        where: {
+          name: 'Felipe Barros Cruz'
+        },
+        attributes: ['name']
       },
-      attributes: ['name']
-    },
-    user: {
-      id: 1,
-      name: 'Felipe Barros',
-      providerId: 1
-    },
-    requestOptions: {
-      fields: ['email'],
-      filters: {
-        email: 'felipebarroscruz@btime.com.br'
+      user: {
+        id: 1,
+        name: 'Felipe Barros',
+        providerId: 1
       },
-      paginate: {
-        page: 1,
-        limit: 10
+      requestOptions: {
+        fields: ['email'],
+        filters: {
+          email: 'felipebarroscruz@btime.com.br'
+        },
+        paginate: {
+          page: 1,
+          limit: 10
+        }
       }
+    },
+    expected: {
+      where: {
+        name: 'Felipe Barros Cruz',
+        providerId: 1,
+        $and: [
+          {
+            email: 'felipebarroscruz@btime.com.br'
+          }
+        ]
+      },
+      attributes: ['name', 'email'],
+      limit: 10,
+      offset: 0
     }
   },
-  expected: {
-    where: {
-      name: 'Felipe Barros Cruz',
-      providerId: 1,
-      $and: [
-        {
-          email: 'felipebarroscruz@btime.com.br'
+  upsert: {
+    payload: {
+      values: {
+        name: 'Felipe Barros'
+      },
+      user: {
+        id: 1,
+        name: 'Felipe Barros',
+        providerId: 1
+      },
+      requestOptions: {
+        paginate: {
+          page: 1,
+          limit: 10
         }
-      ]
+      }
     },
-    attributes: ['name', 'email'],
-    limit: 10,
-    offset: 0
+    expected: {
+      name: 'Felipe Barros',
+      providerId: 1
+    }
   }
 }
