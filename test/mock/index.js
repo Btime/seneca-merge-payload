@@ -15,7 +15,8 @@ export default {
       requestOptions: {
         fields: ['email'],
         filters: {
-          email: 'felipebarroscruz@btime.com.br'
+          userId: 1,
+          email: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
         },
         like: {
           name: 'Fel',
@@ -35,8 +36,13 @@ export default {
         providerId: 1,
         $and: [
           {
+            userId: {
+              $eq: 1
+            }
+          },
+          {
             email: {
-              $eq: 'felipebarroscruz@btime.com.br'
+              $in: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
             }
           },
           {

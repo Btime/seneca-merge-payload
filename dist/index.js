@@ -20,6 +20,8 @@ var PICK_FIELDS = ['user', 'requestOptions'];
 var AND_FILTER_OP = '$and';
 var EQ_FILTER_OP = '$eq';
 var LIKE_FILTER_OP = '$like';
+var IN_FILTER_OP = '$in';
+
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
 
@@ -34,9 +36,15 @@ var transformValueByOperator = function transformValueByOperator(operator, value
   return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value;
 };
 
+var getOperatorByValue = function getOperatorByValue(value, operator) {
+  return !(0, _lodash.isArray)(value) && operator || IN_FILTER_OP;
+};
+
 var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
   var group = [];
   for (var key in values) {
+    var value = values[key];
+    operator = getOperatorByValue(value, operator);
     var clause = {};
     clause[key] = {};
     clause[key][operator] = transformValueByOperator(operator, values[key]);

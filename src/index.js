@@ -16,6 +16,8 @@ const PICK_FIELDS = [
 const AND_FILTER_OP = '$and'
 const EQ_FILTER_OP = '$eq'
 const LIKE_FILTER_OP = '$like'
+const IN_FILTER_OP = '$in'
+
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
@@ -30,9 +32,15 @@ const transformValueByOperator = (operator, value) => {
   return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value
 }
 
+const getOperatorByValue = (value, operator) => {
+  return !isArray(value) && operator || IN_FILTER_OP
+}
+
 const createWhereClauseGroup = (operator, values) => {
   const group = []
   for (let key in values) {
+    const value = values[key]
+    operator = getOperatorByValue(value, operator)
     const clause = {}
     clause[key] = {}
     clause[key][operator] = transformValueByOperator(operator, values[key])
