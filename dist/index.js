@@ -23,12 +23,23 @@ var LIKE_FILTER_OP = '$like';
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
 
+var transformLikeValue = function transformLikeValue(value) {
+  return '%' + value + '%';
+};
+
+var transformValueByOperator = function transformValueByOperator(operator, value) {
+  var TRANSFORM_MAP = {
+    $like: transformLikeValue
+  };
+  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value;
+};
+
 var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
   var group = [];
   for (var key in values) {
     var clause = {};
     clause[key] = {};
-    clause[key][operator] = values[key];
+    clause[key][operator] = transformValueByOperator(operator, values[key]);
     group.push(clause);
   }
   return group;

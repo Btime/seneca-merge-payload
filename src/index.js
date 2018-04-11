@@ -19,12 +19,23 @@ const LIKE_FILTER_OP = '$like'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
+const transformLikeValue = (value) => {
+  return `%${value}%`
+}
+
+const transformValueByOperator = (operator, value) => {
+  const TRANSFORM_MAP = {
+    $like: transformLikeValue
+  }
+  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value
+}
+
 const createWhereClauseGroup = (operator, values) => {
   const group = []
   for (let key in values) {
     const clause = {}
     clause[key] = {}
-    clause[key][operator] = values[key]
+    clause[key][operator] = transformValueByOperator(operator, values[key])
     group.push(clause)
   }
   return group

@@ -41,12 +41,12 @@ export default {
           },
           {
             name: {
-              $like: 'Fel'
+              $like: '%Fel%'
             }
           },
           {
             provider: {
-              $like: 'BTi'
+              $like: '%BTi%'
             }
           }
         ]
