@@ -17,9 +17,22 @@ var _schema2 = _interopRequireDefault(_schema);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PICK_FIELDS = ['user', 'requestOptions'];
-var FILTER_OPERATOR = '$and';
+var AND_FILTER_OP = '$and';
+var EQ_FILTER_OP = '$eq';
+var LIKE_FILTER_OP = '$like';
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
+
+var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
+  var group = [];
+  for (var key in values) {
+    var clause = {};
+    clause[key] = {};
+    clause[key][operator] = values[key];
+    group.push(clause);
+  }
+  return group;
+};
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions;
@@ -35,19 +48,21 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
     });
   }
 
-  var where = {};
+  var where = { enabled: true, deleted: false };
+  where[AND_FILTER_OP] = [];
 
   if (user && user.providerId) {
     where.providerId = user.providerId;
   }
 
   if ((0, _lodash.isPlainObject)(options.filters) && (0, _lodash.keys)(options.filters).length) {
-    where[FILTER_OPERATOR] = [];
-    for (var key in options.filters) {
-      var clause = {};
-      clause[key] = options.filters[key];
-      where[FILTER_OPERATOR].push(clause);
-    }
+    var group = createWhereClauseGroup(EQ_FILTER_OP, options.filters);
+    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group);
+  }
+
+  if ((0, _lodash.isPlainObject)(options.like) && (0, _lodash.keys)(options.like).length) {
+    var _group = createWhereClauseGroup(LIKE_FILTER_OP, options.like);
+    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(_group);
   }
 
   payload = (0, _lodash.merge)(payload, { where: where });

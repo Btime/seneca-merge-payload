@@ -13,9 +13,22 @@ const PICK_FIELDS = [
   'user',
   'requestOptions'
 ]
-const FILTER_OPERATOR = '$and'
+const AND_FILTER_OP = '$and'
+const EQ_FILTER_OP = '$eq'
+const LIKE_FILTER_OP = '$like'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
+
+const createWhereClauseGroup = (operator, values) => {
+  const group = []
+  for (let key in values) {
+    const clause = {}
+    clause[key] = {}
+    clause[key][operator] = values[key]
+    group.push(clause)
+  }
+  return group
+}
 
 const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions
@@ -33,19 +46,21 @@ const defaultMergePayload = (payload, params) => {
     })
   }
 
-  const where = {}
+  const where = { enabled: true, deleted: false }
+  where[AND_FILTER_OP] = []
 
   if (user && user.providerId) {
     where.providerId = user.providerId
   }
 
   if (isPlainObject(options.filters) && keys(options.filters).length) {
-    where[FILTER_OPERATOR] = []
-    for (let key in options.filters) {
-      let clause = {}
-      clause[key] = options.filters[key]
-      where[FILTER_OPERATOR].push(clause)
-    }
+    const group = createWhereClauseGroup(EQ_FILTER_OP, options.filters)
+    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group)
+  }
+
+  if (isPlainObject(options.like) && keys(options.like).length) {
+    const group = createWhereClauseGroup(LIKE_FILTER_OP, options.like)
+    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group)
   }
 
   payload = merge(payload, { where })

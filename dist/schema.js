@@ -18,6 +18,8 @@ exports.default = {
 
     filters: _joi2.default.object().optional().min(1).description('\n        the filters to format in query string that means the where clause'),
 
+    like: _joi2.default.object().optional().min(1).description('the filter to use in like operation'),
+
     paginate: _joi2.default.object().optional().keys({
       page: _joi2.default.number().integer(),
       limit: _joi2.default.number().integer()

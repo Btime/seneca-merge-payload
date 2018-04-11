@@ -25,6 +25,11 @@ export default {
         the filters to format in query string that means the where clause`
       ),
 
+    like: Joi.object()
+      .optional()
+      .min(1)
+      .description('the filter to use in like operation'),
+
     paginate: Joi.object()
       .optional()
       .keys({

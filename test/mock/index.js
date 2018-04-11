@@ -17,6 +17,10 @@ export default {
         filters: {
           email: 'felipebarroscruz@btime.com.br'
         },
+        like: {
+          name: 'Fel',
+          provider: 'BTi'
+        },
         paginate: {
           page: 1,
           limit: 10
@@ -26,10 +30,24 @@ export default {
     expected: {
       where: {
         name: 'Felipe Barros Cruz',
+        enabled: true,
+        deleted: false,
         providerId: 1,
         $and: [
           {
-            email: 'felipebarroscruz@btime.com.br'
+            email: {
+              $eq: 'felipebarroscruz@btime.com.br'
+            }
+          },
+          {
+            name: {
+              $like: 'Fel'
+            }
+          },
+          {
+            provider: {
+              $like: 'BTi'
+            }
           }
         ]
       },
