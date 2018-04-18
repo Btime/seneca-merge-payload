@@ -66,8 +66,14 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
       attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields))
     });
   }
+  var enabled = (0, _lodash.get)(payload, 'where.enabled');
+  var deleted = (0, _lodash.get)(payload, 'where.deleted');
 
-  var where = { enabled: true, deleted: false };
+  var where = {
+    enabled: enabled !== undefined ? enabled : true,
+    deleted: deleted !== undefined ? deleted : false
+  };
+
   where[AND_FILTER_OP] = [];
 
   if (user && user.providerId) {

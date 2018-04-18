@@ -5,6 +5,7 @@ import {
   merge,
   uniq,
   keys,
+  get,
   pick
 } from 'lodash'
 import Joi from 'joi'
@@ -64,8 +65,14 @@ const defaultMergePayload = (payload, params) => {
       )
     })
   }
+  const enabled = get(payload, 'where.enabled')
+  const deleted = get(payload, 'where.deleted')
 
-  const where = { enabled: true, deleted: false }
+  const where = {
+    enabled: enabled !== undefined ? enabled : true,
+    deleted: deleted !== undefined ? deleted : false
+  }
+
   where[AND_FILTER_OP] = []
 
   if (user && user.providerId) {
