@@ -54,8 +54,10 @@ var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
 };
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
-  var options = params.requestOptions;
-  var user = params.user;
+  var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
+  var user = params.user && (0, _lodash.clone)(params.user);
+  delete params.requestOptions;
+  delete params.user;
 
   if (!(0, _lodash.isPlainObject)(options)) {
     return payload;

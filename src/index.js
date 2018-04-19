@@ -6,7 +6,8 @@ import {
   uniq,
   keys,
   get,
-  pick
+  pick,
+  clone
 } from 'lodash'
 import Joi from 'joi'
 import Schema from './schema'
@@ -51,8 +52,10 @@ const createWhereClauseGroup = (operator, values) => {
 }
 
 const defaultMergePayload = (payload, params) => {
-  const options = params.requestOptions
-  const user = params.user
+  const options = params.requestOptions && clone(params.requestOptions)
+  const user = params.user && clone(params.user)
+  delete params.requestOptions
+  delete params.user
 
   if (!isPlainObject(options)) {
     return payload
