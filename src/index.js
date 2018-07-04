@@ -23,6 +23,9 @@ const IN_FILTER_OP = '$in'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
+const DEFAULT_ORDINATION_FIELD = 'updatedAt'
+const DEFAULT_ORDINATION_TYPE = 'DESC'
+
 const transformLikeValue = (value) => {
   return `%${value}%`
 }
@@ -65,7 +68,8 @@ const defaultMergePayload = (payload, params) => {
     payload = merge(payload, {
       attributes: uniq(
         (payload.attributes || []).concat(options.fields)
-      )
+      ),
+      order: [ [ DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE ] ]
     })
   }
   const enabled = get(payload, 'where.enabled')
@@ -99,6 +103,16 @@ const defaultMergePayload = (payload, params) => {
     const limit = options.paginate.limit || DEFAULT_LIMIT
     const offset = limit * (page - 1)
     payload = merge(payload, { limit, offset })
+  }
+
+  if (isPlainObject(options.ordination)) {
+    const order = [
+      [
+        options.ordination.field,
+        options.ordination.type
+      ]
+    ]
+    payload = merge(payload, { order })
   }
 
   return payload

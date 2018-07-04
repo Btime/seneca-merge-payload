@@ -25,6 +25,9 @@ var IN_FILTER_OP = '$in';
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
 
+var DEFAULT_ORDINATION_FIELD = 'updatedAt';
+var DEFAULT_ORDINATION_TYPE = 'DESC';
+
 var transformLikeValue = function transformLikeValue(value) {
   return '%' + value + '%';
 };
@@ -65,7 +68,8 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
 
   if ((0, _lodash.isArray)(options.fields) && options.fields.length) {
     payload = (0, _lodash.merge)(payload, {
-      attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields))
+      attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields)),
+      order: [[DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]]
     });
   }
   var enabled = (0, _lodash.get)(payload, 'where.enabled');
@@ -99,6 +103,11 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
     var limit = options.paginate.limit || DEFAULT_LIMIT;
     var offset = limit * (page - 1);
     payload = (0, _lodash.merge)(payload, { limit: limit, offset: offset });
+  }
+
+  if ((0, _lodash.isPlainObject)(options.ordination)) {
+    var order = [[options.ordination.field, options.ordination.type]];
+    payload = (0, _lodash.merge)(payload, { order: order });
   }
 
   return payload;

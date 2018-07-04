@@ -25,6 +25,10 @@ export default {
         paginate: {
           page: 1,
           limit: 10
+        },
+        ordination: {
+          field: 'id',
+          type: 'DESC'
         }
       }
     },
@@ -58,6 +62,7 @@ export default {
         ]
       },
       attributes: ['name', 'email'],
+      order: [ [ 'id', 'DESC' ] ],
       limit: 10,
       offset: 0
     }
