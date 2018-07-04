@@ -111,10 +111,7 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
     if (options.ordination.field.indexOf('.') >= 0) {
       var pattern = /([a-zA-Z]+).([a-zA-Z]+)/;
       var entity = options.ordination.field.replace(pattern, '$1');
-      var field = options.ordination.field.replace(pattern, '$2');
-
       order[0].unshift({ entity: entity, as: entity });
-      order[0][1] = field;
     }
 
     payload = (0, _lodash.merge)(payload, { order: order });

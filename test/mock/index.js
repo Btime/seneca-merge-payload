@@ -106,7 +106,7 @@ export default {
         $and: []
       },
       order: [
-        [{ entity: 'customer', as: 'customer' }, 'name', 'DESC']
+        [{ entity: 'customer', as: 'customer' }, 'customer.name', 'DESC']
       ],
       limit: 25,
       offset: 0

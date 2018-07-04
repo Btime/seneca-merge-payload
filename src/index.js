@@ -116,10 +116,7 @@ const defaultMergePayload = (payload, params) => {
     if (options.ordination.field.indexOf('.') >= 0) {
       const pattern = /([a-zA-Z]+).([a-zA-Z]+)/
       const entity = options.ordination.field.replace(pattern, '$1')
-      const field = options.ordination.field.replace(pattern, '$2')
-
       order[0].unshift({ entity, as: entity })
-      order[0][1] = field
     }
 
     payload = merge(payload, { order })
