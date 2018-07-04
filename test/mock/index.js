@@ -1,4 +1,7 @@
 export default {
+  /**
+   * @description: Mock for default befavior
+   */
   default: {
     payload: {
       values: {
@@ -67,6 +70,49 @@ export default {
       offset: 0
     }
   },
+
+  /**
+   * @description: Mock for entity with composed name
+   */
+  composedNameForAnEntity: {
+    payload: {
+      values: {
+        where: {
+          name: 'Felipe Barros Cruz'
+        }
+      },
+      user: {
+        id: 1,
+        name: 'Felipe Barros',
+        providerId: 1
+      },
+      requestOptions: {
+        paginate: {
+          page: 1,
+          limit: 25
+        },
+        ordination: {
+          field: 'customer.name',
+          type: 'DESC'
+        }
+      }
+    },
+    expected: {
+      where: {
+        name: 'Felipe Barros Cruz',
+        enabled: true,
+        deleted: false,
+        providerId: 1,
+        $and: []
+      },
+      order: [
+        [{ entity: 'customer', as: 'customer' }, 'name', 'DESC']
+      ],
+      limit: 25,
+      offset: 0
+    }
+  },
+
   upsert: {
     payload: {
       values: {

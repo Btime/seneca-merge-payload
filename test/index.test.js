@@ -19,6 +19,15 @@ describe('Seneca Merge Payload', () => {
       expect(isEqual(result, Mock.default.expected)).to.be.equal(true)
     })
 
+  it('Expect merge validate with composed name for an entity when applying ordination',
+    () => {
+      const payload = Mock.composedNameForAnEntity.payload
+      const result = SenecaMergePayload(payload.values, payload)
+      expect(isPlainObject(result)).to.be.equal(true)
+      expect(isEqual(result, Mock.composedNameForAnEntity.expected))
+        .to.be.equal(true)
+    })
+
   it('Expect merge validate with upsert method and requestOptions',
     () => {
       const payload = Mock.upsert.payload
