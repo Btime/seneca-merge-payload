@@ -25,7 +25,7 @@ var IN_FILTER_OP = '$in';
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
 
-var DEFAULT_ORDINATION_FIELD = 'updatedAt';
+var DEFAULT_ORDINATION_FIELD = 'createdAt';
 var DEFAULT_ORDINATION_TYPE = 'DESC';
 
 var transformLikeValue = function transformLikeValue(value) {
@@ -66,10 +66,11 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
     return payload;
   }
 
+  payload.order = [[DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]];
+
   if ((0, _lodash.isArray)(options.fields) && options.fields.length) {
     payload = (0, _lodash.merge)(payload, {
-      attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields)),
-      order: [[DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]]
+      attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields))
     });
   }
   var enabled = (0, _lodash.get)(payload, 'where.enabled');
@@ -109,23 +110,12 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
     var order = [[options.ordination.field, options.ordination.type]];
 
     if (options.ordination.field.indexOf('.') >= 0) {
-      var pattern = /([a-zA-Z]+).([a-zA-Z]+)/;
+      var pattern = /([a-zA-Z]+).[a-zA-Z]+/;
       var entity = options.ordination.field.replace(pattern, '$1');
       order[0].unshift({ entity: entity, as: entity });
     }
 
     payload = (0, _lodash.merge)(payload, { order: order });
-  }
-
-  return payload;
-};
-
-var upsertMergePayload = function upsertMergePayload(payload, params) {
-  var user = params.user;
-
-
-  if (user && user.providerId) {
-    payload.providerId = payload.providerId || user.providerId;
   }
 
   return payload;
@@ -141,9 +131,9 @@ var SenecaMergePayload = function SenecaMergePayload(payload, params) {
   }
 
   var mergeMap = {
-    default: defaultMergePayload,
-    upsert: upsertMergePayload
+    default: defaultMergePayload
   };
+
   var caller = mergeMap[method];
 
   if (!(0, _lodash.isFunction)(caller)) {

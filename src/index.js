@@ -23,7 +23,7 @@ const IN_FILTER_OP = '$in'
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
 
-const DEFAULT_ORDINATION_FIELD = 'updatedAt'
+const DEFAULT_ORDINATION_FIELD = 'createdAt'
 const DEFAULT_ORDINATION_TYPE = 'DESC'
 
 const transformLikeValue = (value) => {
@@ -64,12 +64,15 @@ const defaultMergePayload = (payload, params) => {
     return payload
   }
 
+  payload.order = [
+    [DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]
+  ]
+
   if (isArray(options.fields) && options.fields.length) {
     payload = merge(payload, {
       attributes: uniq(
         (payload.attributes || []).concat(options.fields)
-      ),
-      order: [ [ DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE ] ]
+      )
     })
   }
   const enabled = get(payload, 'where.enabled')
@@ -114,22 +117,12 @@ const defaultMergePayload = (payload, params) => {
     ]
 
     if (options.ordination.field.indexOf('.') >= 0) {
-      const pattern = /([a-zA-Z]+).([a-zA-Z]+)/
+      const pattern = /([a-zA-Z]+).[a-zA-Z]+/
       const entity = options.ordination.field.replace(pattern, '$1')
       order[0].unshift({ entity, as: entity })
     }
 
     payload = merge(payload, { order })
-  }
-
-  return payload
-}
-
-const upsertMergePayload = (payload, params) => {
-  const { user } = params
-
-  if (user && user.providerId) {
-    payload.providerId = payload.providerId || user.providerId
   }
 
   return payload
@@ -143,9 +136,9 @@ const SenecaMergePayload = (payload, params, method = 'default') => {
   }
 
   const mergeMap = {
-    default: defaultMergePayload,
-    upsert: upsertMergePayload
+    default: defaultMergePayload
   }
+
   const caller = mergeMap[method]
 
   if (!isFunction(caller)) {

@@ -1,13 +1,13 @@
 # seneca-merge-payload
 
-Seneca Merge Payload
+This package is responsible for formatting the queries used by Entity microservice, which uses Sequelize.js
 
 ## Setup
 
 ### Installing
 
 ```bash
-npm i && yarn install
+npm i
 ```
 
 ### Build
@@ -18,8 +18,8 @@ npm run build
 
 ## Usage
 
-### How to install
+### Installing
 
 ```bash
-npm i Btime/seneca-merge-payload && yarn install
+npm i Btime/seneca-merge-payload -S
 ```
