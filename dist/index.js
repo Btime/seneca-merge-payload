@@ -17,6 +17,8 @@ var _schema2 = _interopRequireDefault(_schema);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PICK_FIELDS = ['user', 'requestOptions'];
+
+var OR_FILTER_OP = '$or';
 var AND_FILTER_OP = '$and';
 var EQ_FILTER_OP = '$eq';
 var LIKE_FILTER_OP = '$like';
@@ -59,6 +61,9 @@ var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
   var user = params.user && (0, _lodash.clone)(params.user);
+
+  var FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator && options.likeOperator === OR_FILTER_OP.substr(1) ? OR_FILTER_OP : AND_FILTER_OP;
+
   delete params.requestOptions;
   delete params.user;
 
@@ -82,6 +87,7 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
   };
 
   where[AND_FILTER_OP] = [];
+  where[FILTER_OP_IN_LIKE_CLAUSE] = [];
 
   if (user && user.providerId) {
     where.providerId = user.providerId;
@@ -94,7 +100,7 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
 
   if ((0, _lodash.isPlainObject)(options.like) && (0, _lodash.keys)(options.like).length) {
     var _group = createWhereClauseGroup(LIKE_FILTER_OP, options.like);
-    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(_group);
+    where[FILTER_OP_IN_LIKE_CLAUSE] = where[FILTER_OP_IN_LIKE_CLAUSE].concat(_group);
   }
 
   payload = (0, _lodash.merge)(payload, { where: where });

@@ -25,12 +25,14 @@ export default {
           name: 'Fel',
           provider: 'BTi'
         },
+        likeOperator: 'or',
         paginate: {
           page: 1,
           limit: 10
         }
       }
     },
+
     expected: {
       where: {
         name: 'Felipe Barros Cruz',
@@ -47,7 +49,9 @@ export default {
             email: {
               $in: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
             }
-          },
+          }
+        ],
+        $or: [
           {
             name: {
               $like: '%Fel%'

@@ -11,10 +11,13 @@ import {
 } from 'lodash'
 import Joi from 'joi'
 import Schema from './schema'
+
 const PICK_FIELDS = [
   'user',
   'requestOptions'
 ]
+
+const OR_FILTER_OP = '$or'
 const AND_FILTER_OP = '$and'
 const EQ_FILTER_OP = '$eq'
 const LIKE_FILTER_OP = '$like'
@@ -57,6 +60,12 @@ const createWhereClauseGroup = (operator, values) => {
 const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions && clone(params.requestOptions)
   const user = params.user && clone(params.user)
+
+  const FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator &&
+    options.likeOperator === OR_FILTER_OP.substr(1)
+    ? OR_FILTER_OP
+    : AND_FILTER_OP
+
   delete params.requestOptions
   delete params.user
 
@@ -84,6 +93,7 @@ const defaultMergePayload = (payload, params) => {
   }
 
   where[AND_FILTER_OP] = []
+  where[FILTER_OP_IN_LIKE_CLAUSE] = []
 
   if (user && user.providerId) {
     where.providerId = user.providerId
@@ -96,7 +106,7 @@ const defaultMergePayload = (payload, params) => {
 
   if (isPlainObject(options.like) && keys(options.like).length) {
     const group = createWhereClauseGroup(LIKE_FILTER_OP, options.like)
-    where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group)
+    where[FILTER_OP_IN_LIKE_CLAUSE] = where[FILTER_OP_IN_LIKE_CLAUSE].concat(group)
   }
 
   payload = merge(payload, { where })
