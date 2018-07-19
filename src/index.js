@@ -61,17 +61,17 @@ const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions && clone(params.requestOptions)
   const user = params.user && clone(params.user)
 
-  const FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator &&
-    options.likeOperator === OR_FILTER_OP.substr(1)
-    ? OR_FILTER_OP
-    : AND_FILTER_OP
-
   delete params.requestOptions
   delete params.user
 
   if (!isPlainObject(options)) {
     return payload
   }
+
+  const FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator &&
+    options.likeOperator === OR_FILTER_OP.substr(1)
+      ? OR_FILTER_OP
+      : AND_FILTER_OP
 
   payload.order = [
     [DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]

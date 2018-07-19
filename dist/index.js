@@ -62,14 +62,14 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
   var user = params.user && (0, _lodash.clone)(params.user);
 
-  var FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator && options.likeOperator === OR_FILTER_OP.substr(1) ? OR_FILTER_OP : AND_FILTER_OP;
-
   delete params.requestOptions;
   delete params.user;
 
   if (!(0, _lodash.isPlainObject)(options)) {
     return payload;
   }
+
+  var FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator && options.likeOperator === OR_FILTER_OP.substr(1) ? OR_FILTER_OP : AND_FILTER_OP;
 
   payload.order = [[DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]];
 
