@@ -19,7 +19,8 @@ export default {
         fields: ['email'],
         filters: {
           userId: 1,
-          email: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
+          email: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br'],
+          createdAt: [1533672413, 1533672413]
         },
         like: {
           name: 'Fel',
@@ -48,6 +49,11 @@ export default {
           {
             email: {
               $in: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
+            }
+          },
+          {
+            createdAt: {
+              $between: [1533672413, 1533672413]
             }
           }
         ],
@@ -87,6 +93,9 @@ export default {
         providerId: 1
       },
       requestOptions: {
+        filters: {
+          updatedAt: [1533672413, 1533672413]
+        },
         paginate: {
           page: 1,
           limit: 25
@@ -103,36 +112,19 @@ export default {
         enabled: true,
         deleted: false,
         providerId: 1,
-        $and: []
+        $and: [
+          {
+            updatedAt: {
+              $between: [1533672413, 1533672413]
+            }
+          }
+        ]
       },
       order: [
         [{ entity: 'customer', as: 'customer' }, 'customer.name', 'DESC']
       ],
       limit: 25,
       offset: 0
-    }
-  },
-
-  upsert: {
-    payload: {
-      values: {
-        name: 'Felipe Barros'
-      },
-      user: {
-        id: 1,
-        name: 'Felipe Barros',
-        providerId: 1
-      },
-      requestOptions: {
-        paginate: {
-          page: 1,
-          limit: 10
-        }
-      }
-    },
-    expected: {
-      name: 'Felipe Barros',
-      providerId: 1
     }
   }
 }

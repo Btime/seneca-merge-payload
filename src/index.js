@@ -22,6 +22,7 @@ const AND_FILTER_OP = '$and'
 const EQ_FILTER_OP = '$eq'
 const LIKE_FILTER_OP = '$like'
 const IN_FILTER_OP = '$in'
+const BETWEEN_FILTER_OP = '$between'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 25
@@ -29,33 +30,10 @@ const DEFAULT_LIMIT = 25
 const DEFAULT_ORDINATION_FIELD = 'createdAt'
 const DEFAULT_ORDINATION_TYPE = 'DESC'
 
-const transformLikeValue = (value) => {
-  return `%${value}%`
-}
-
-const transformValueByOperator = (operator, value) => {
-  const TRANSFORM_MAP = {
-    $like: transformLikeValue
-  }
-  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value
-}
-
-const getOperatorByValue = (value, operator) => {
-  return !isArray(value) && operator || IN_FILTER_OP
-}
-
-const createWhereClauseGroup = (operator, values) => {
-  const group = []
-  for (let key in values) {
-    const value = values[key]
-    operator = getOperatorByValue(value, operator)
-    const clause = {}
-    clause[key] = {}
-    clause[key][operator] = transformValueByOperator(operator, values[key])
-    group.push(clause)
-  }
-  return group
-}
+const DATE_KEYS = [
+  'createdAt',
+  'updatedAt'
+]
 
 const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions && clone(params.requestOptions)
@@ -136,6 +114,49 @@ const defaultMergePayload = (payload, params) => {
   }
 
   return payload
+}
+
+const createWhereClauseGroup = (operator, values) => {
+  const group = []
+  let sequelizeOperator
+
+  for (let key in values) {
+    sequelizeOperator = operator
+
+    if (DATE_KEYS.indexOf(key) >= 0) {
+      sequelizeOperator = BETWEEN_FILTER_OP
+    }
+
+    const value = values[key]
+    sequelizeOperator = getOperatorByValue(value, sequelizeOperator)
+    const clause = {}
+    clause[key] = {}
+    clause[key][sequelizeOperator] = transformValueByOperator(
+      sequelizeOperator, values[key]
+    )
+    group.push(clause)
+  }
+
+  return group
+}
+
+const getOperatorByValue = (value, operator) => {
+  if (isArray(value) && operator === BETWEEN_FILTER_OP) {
+    return operator
+  }
+
+  return !isArray(value) && operator || IN_FILTER_OP
+}
+
+const transformValueByOperator = (operator, value) => {
+  const TRANSFORM_MAP = {
+    $like: transformLikeValue
+  }
+  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value
+}
+
+const transformLikeValue = (value) => {
+  return `%${value}%`
 }
 
 const SenecaMergePayload = (payload, params, method = 'default') => {

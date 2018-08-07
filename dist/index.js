@@ -23,6 +23,7 @@ var AND_FILTER_OP = '$and';
 var EQ_FILTER_OP = '$eq';
 var LIKE_FILTER_OP = '$like';
 var IN_FILTER_OP = '$in';
+var BETWEEN_FILTER_OP = '$between';
 
 var DEFAULT_PAGE = 1;
 var DEFAULT_LIMIT = 25;
@@ -30,33 +31,7 @@ var DEFAULT_LIMIT = 25;
 var DEFAULT_ORDINATION_FIELD = 'createdAt';
 var DEFAULT_ORDINATION_TYPE = 'DESC';
 
-var transformLikeValue = function transformLikeValue(value) {
-  return '%' + value + '%';
-};
-
-var transformValueByOperator = function transformValueByOperator(operator, value) {
-  var TRANSFORM_MAP = {
-    $like: transformLikeValue
-  };
-  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value;
-};
-
-var getOperatorByValue = function getOperatorByValue(value, operator) {
-  return !(0, _lodash.isArray)(value) && operator || IN_FILTER_OP;
-};
-
-var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
-  var group = [];
-  for (var key in values) {
-    var value = values[key];
-    operator = getOperatorByValue(value, operator);
-    var clause = {};
-    clause[key] = {};
-    clause[key][operator] = transformValueByOperator(operator, values[key]);
-    group.push(clause);
-  }
-  return group;
-};
+var DATE_KEYS = ['createdAt', 'updatedAt'];
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
@@ -125,6 +100,47 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
   }
 
   return payload;
+};
+
+var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
+  var group = [];
+  var sequelizeOperator = void 0;
+
+  for (var key in values) {
+    sequelizeOperator = operator;
+
+    if (DATE_KEYS.indexOf(key) >= 0) {
+      sequelizeOperator = BETWEEN_FILTER_OP;
+    }
+
+    var value = values[key];
+    sequelizeOperator = getOperatorByValue(value, sequelizeOperator);
+    var clause = {};
+    clause[key] = {};
+    clause[key][sequelizeOperator] = transformValueByOperator(sequelizeOperator, values[key]);
+    group.push(clause);
+  }
+
+  return group;
+};
+
+var getOperatorByValue = function getOperatorByValue(value, operator) {
+  if ((0, _lodash.isArray)(value) && operator === BETWEEN_FILTER_OP) {
+    return operator;
+  }
+
+  return !(0, _lodash.isArray)(value) && operator || IN_FILTER_OP;
+};
+
+var transformValueByOperator = function transformValueByOperator(operator, value) {
+  var TRANSFORM_MAP = {
+    $like: transformLikeValue
+  };
+  return TRANSFORM_MAP[operator] && TRANSFORM_MAP[operator](value) || value;
+};
+
+var transformLikeValue = function transformLikeValue(value) {
+  return '%' + value + '%';
 };
 
 var SenecaMergePayload = function SenecaMergePayload(payload, params) {
