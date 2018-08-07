@@ -20,7 +20,7 @@ export default {
         filters: {
           userId: 1,
           email: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br'],
-          createdAt: [1533672413, 1533672413]
+          createdAt: ['2018-06-01', '2018-08-01']
         },
         like: {
           name: 'Fel',
@@ -53,7 +53,7 @@ export default {
           },
           {
             createdAt: {
-              $between: [1533672413, 1533672413]
+              $between: ['2018-06-01', '2018-08-01']
             }
           }
         ],
@@ -94,7 +94,7 @@ export default {
       },
       requestOptions: {
         filters: {
-          updatedAt: [1533672413, 1533672413]
+          updatedAt: ['2018-06-01', '2018-08-01']
         },
         paginate: {
           page: 1,
@@ -115,7 +115,7 @@ export default {
         $and: [
           {
             updatedAt: {
-              $between: [1533672413, 1533672413]
+              $between: ['2018-06-01', '2018-08-01']
             }
           }
         ]
