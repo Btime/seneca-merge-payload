@@ -31,7 +31,7 @@ var DEFAULT_LIMIT = 25;
 var DEFAULT_ORDINATION_FIELD = 'createdAt';
 var DEFAULT_ORDINATION_TYPE = 'DESC';
 
-var DATE_KEYS = ['createdAt', 'updatedAt'];
+var DATE_KEYS = ['createdAt', 'updatedAt', 'user.last_login', 'refundDate', 'scheduling', 'startDate', 'endDate'];
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);

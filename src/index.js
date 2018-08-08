@@ -32,7 +32,12 @@ const DEFAULT_ORDINATION_TYPE = 'DESC'
 
 const DATE_KEYS = [
   'createdAt',
-  'updatedAt'
+  'updatedAt',
+  'user.last_login',
+  'refundDate',
+  'scheduling',
+  'startDate',
+  'endDate'
 ]
 
 const defaultMergePayload = (payload, params) => {
