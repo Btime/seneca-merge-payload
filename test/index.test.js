@@ -15,6 +15,7 @@ describe('Seneca Merge Payload', () => {
     () => {
       const payload = Mock.default.payload
       const result = SenecaMergePayload(payload.values, payload)
+
       expect(isPlainObject(result)).to.be.equal(true)
       expect(isEqual(result, Mock.default.expected)).to.be.equal(true)
     })
@@ -23,6 +24,7 @@ describe('Seneca Merge Payload', () => {
     () => {
       const payload = Mock.composedNameForAnEntity.payload
       const result = SenecaMergePayload(payload.values, payload)
+
       expect(isPlainObject(result)).to.be.equal(true)
       expect(isEqual(result, Mock.composedNameForAnEntity.expected))
         .to.be.equal(true)

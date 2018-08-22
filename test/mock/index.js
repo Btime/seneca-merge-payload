@@ -37,7 +37,6 @@ export default {
     expected: {
       where: {
         name: 'Felipe Barros Cruz',
-        enabled: true,
         deleted: false,
         providerId: 1,
         $and: [
@@ -84,7 +83,8 @@ export default {
     payload: {
       values: {
         where: {
-          name: 'Felipe Barros Cruz'
+          name: 'Felipe Barros Cruz',
+          enabled: false
         }
       },
       user: {
@@ -106,11 +106,12 @@ export default {
         }
       }
     },
+
     expected: {
       where: {
         name: 'Felipe Barros Cruz',
-        enabled: true,
         deleted: false,
+        enabled: false,
         providerId: 1,
         $and: [
           {
