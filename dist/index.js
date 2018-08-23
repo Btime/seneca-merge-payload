@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _lodash = require('lodash');
 
+var _ = _interopRequireWildcard(_lodash);
+
 var _joi = require('joi');
 
 var _joi2 = _interopRequireDefault(_joi);
@@ -15,6 +17,8 @@ var _schema = require('./schema');
 var _schema2 = _interopRequireDefault(_schema);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var _require = require('./fields'),
     PICK_FIELDS = _require.PICK_FIELDS,
@@ -31,10 +35,10 @@ var _require = require('./fields'),
     LIKE_FILTER_OP = _require.LIKE_FILTER_OP;
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
-  var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
+  var options = params.requestOptions && _.clone(params.requestOptions);
   delete params.requestOptions;
 
-  if (!(0, _lodash.isPlainObject)(options)) {
+  if (!_.isPlainObject(options)) {
     return payload;
   }
 
@@ -42,13 +46,13 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
 
   payload.order = [[DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]];
 
-  if ((0, _lodash.isArray)(options.fields) && options.fields.length) {
-    payload = (0, _lodash.merge)(payload, {
-      attributes: (0, _lodash.uniq)((payload.attributes || []).concat(options.fields))
+  if (_.isArray(options.fields) && options.fields.length) {
+    payload = _.merge(payload, {
+      attributes: _.uniq((payload.attributes || []).concat(options.fields))
     });
   }
-  var enabled = (0, _lodash.get)(payload, 'where.enabled');
-  var deleted = (0, _lodash.get)(payload, 'where.deleted');
+  var enabled = _.get(payload, 'where.enabled');
+  var deleted = _.get(payload, 'where.deleted');
 
   var where = {
     enabled: enabled !== undefined ? enabled : true,
@@ -58,26 +62,26 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
   where[AND_FILTER_OP] = [];
   where[FILTER_OP_IN_LIKE_CLAUSE] = [];
 
-  if ((0, _lodash.isPlainObject)(options.filters) && (0, _lodash.keys)(options.filters).length) {
+  if (_.isPlainObject(options.filters) && _.keys(options.filters).length) {
     var group = createWhereClauseGroup(EQ_FILTER_OP, options.filters);
     where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group);
   }
 
-  if ((0, _lodash.isPlainObject)(options.like) && (0, _lodash.keys)(options.like).length) {
+  if (_.isPlainObject(options.like) && _.keys(options.like).length) {
     var _group = createWhereClauseGroup(LIKE_FILTER_OP, options.like);
     where[FILTER_OP_IN_LIKE_CLAUSE] = where[FILTER_OP_IN_LIKE_CLAUSE].concat(_group);
   }
 
-  payload = (0, _lodash.merge)(payload, { where: where });
+  payload = _.merge(payload, { where: where });
 
-  if ((0, _lodash.isPlainObject)(options.paginate)) {
+  if (_.isPlainObject(options.paginate)) {
     var page = options.paginate.page || DEFAULT_PAGE;
     var limit = options.paginate.limit || DEFAULT_LIMIT;
     var offset = limit * (page - 1);
-    payload = (0, _lodash.merge)(payload, { limit: limit, offset: offset });
+    payload = _.merge(payload, { limit: limit, offset: offset });
   }
 
-  if ((0, _lodash.isPlainObject)(options.ordination)) {
+  if (_.isPlainObject(options.ordination)) {
     var order = [[options.ordination.field, options.ordination.type]];
 
     if (options.ordination.field.indexOf('.') >= 0) {
@@ -86,7 +90,7 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
       order[0].unshift({ entity: entity, as: entity });
     }
 
-    payload = (0, _lodash.merge)(payload, { order: order });
+    payload = _.merge(payload, { order: order });
   }
 
   return payload;
@@ -115,11 +119,11 @@ var createWhereClauseGroup = function createWhereClauseGroup(operator, values) {
 };
 
 var getOperatorByValue = function getOperatorByValue(value, operator) {
-  if ((0, _lodash.isArray)(value) && operator === BETWEEN_FILTER_OP) {
+  if (_.isArray(value) && operator === BETWEEN_FILTER_OP) {
     return operator;
   }
 
-  return !(0, _lodash.isArray)(value) && operator || IN_FILTER_OP;
+  return !_.isArray(value) && operator || IN_FILTER_OP;
 };
 
 var transformValueByOperator = function transformValueByOperator(operator, value) {
@@ -136,9 +140,9 @@ var transformLikeValue = function transformLikeValue(value) {
 var SenecaMergePayload = function SenecaMergePayload(payload, params) {
   var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'default';
 
-  var isValid = _joi2.default.validate((0, _lodash.pick)(params, PICK_FIELDS), _schema2.default);
+  var isValid = _joi2.default.validate(_.pick(params, PICK_FIELDS), _schema2.default);
 
-  if (!(0, _lodash.isPlainObject)(payload) || isValid.error) {
+  if (!_.isPlainObject(payload) || isValid.error) {
     return payload;
   }
 
@@ -148,7 +152,7 @@ var SenecaMergePayload = function SenecaMergePayload(payload, params) {
 
   var caller = mergeMap[method];
 
-  if (!(0, _lodash.isFunction)(caller)) {
+  if (!_.isFunction(caller)) {
     return payload;
   }
 
