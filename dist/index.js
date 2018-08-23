@@ -16,29 +16,23 @@ var _schema2 = _interopRequireDefault(_schema);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var PICK_FIELDS = ['user', 'requestOptions'];
-
-var OR_FILTER_OP = '$or';
-var AND_FILTER_OP = '$and';
-var EQ_FILTER_OP = '$eq';
-var LIKE_FILTER_OP = '$like';
-var IN_FILTER_OP = '$in';
-var BETWEEN_FILTER_OP = '$between';
-
-var DEFAULT_PAGE = 1;
-var DEFAULT_LIMIT = 25;
-
-var DEFAULT_ORDINATION_FIELD = 'createdAt';
-var DEFAULT_ORDINATION_TYPE = 'DESC';
-
-var DATE_KEYS = ['createdAt', 'updatedAt', 'user.last_login', 'refundDate', 'scheduling', 'startDate', 'endDate'];
+var _require = require('./fields'),
+    PICK_FIELDS = _require.PICK_FIELDS,
+    OR_FILTER_OP = _require.OR_FILTER_OP,
+    AND_FILTER_OP = _require.AND_FILTER_OP,
+    EQ_FILTER_OP = _require.EQ_FILTER_OP,
+    BETWEEN_FILTER_OP = _require.BETWEEN_FILTER_OP,
+    DATE_KEYS = _require.DATE_KEYS,
+    DEFAULT_LIMIT = _require.DEFAULT_LIMIT,
+    DEFAULT_ORDINATION_FIELD = _require.DEFAULT_ORDINATION_FIELD,
+    DEFAULT_ORDINATION_TYPE = _require.DEFAULT_ORDINATION_TYPE,
+    DEFAULT_PAGE = _require.DEFAULT_PAGE,
+    IN_FILTER_OP = _require.IN_FILTER_OP,
+    LIKE_FILTER_OP = _require.LIKE_FILTER_OP;
 
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && (0, _lodash.clone)(params.requestOptions);
-  var user = params.user && (0, _lodash.clone)(params.user);
-
   delete params.requestOptions;
-  delete params.user;
 
   if (!(0, _lodash.isPlainObject)(options)) {
     return payload;
@@ -63,10 +57,6 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
 
   where[AND_FILTER_OP] = [];
   where[FILTER_OP_IN_LIKE_CLAUSE] = [];
-
-  if (user && user.providerId) {
-    where.providerId = user.providerId;
-  }
 
   if ((0, _lodash.isPlainObject)(options.filters) && (0, _lodash.keys)(options.filters).length) {
     var group = createWhereClauseGroup(EQ_FILTER_OP, options.filters);

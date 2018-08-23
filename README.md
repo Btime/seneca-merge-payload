@@ -67,5 +67,6 @@ https://v2api.btime.com.br/service-orders?requestOptions={"fields":["id","yearly
 - **Using filters of `user.last_login` between two dates, fields, paginate and ordination - Contributor:**
 
 ```
-https://v2api.btime.com.br/contributors?requestOptions={"fields":["id","name","email","createdAt","updatedAt"],"filters":{"user.last_login":["2018-01-01", "2018-08-10"]},"paginate":{"limit":10,"page":1},"ordination":{"field":"name","type":"DESC"}}
+https://v2api.btime.com.br/users?requestOptions={"fields":["id","name","email",
+"createdAt","updatedAt"],"filters":{"user.last_login":["2018-01-01", "2018-08-10"]},"paginate":{"limit":10,"page":1},"ordination":{"field":"name","type":"DESC"}}
 ```

@@ -12,40 +12,24 @@ import {
 import Joi from 'joi'
 import Schema from './schema'
 
-const PICK_FIELDS = [
-  'user',
-  'requestOptions'
-]
-
-const OR_FILTER_OP = '$or'
-const AND_FILTER_OP = '$and'
-const EQ_FILTER_OP = '$eq'
-const LIKE_FILTER_OP = '$like'
-const IN_FILTER_OP = '$in'
-const BETWEEN_FILTER_OP = '$between'
-
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 25
-
-const DEFAULT_ORDINATION_FIELD = 'createdAt'
-const DEFAULT_ORDINATION_TYPE = 'DESC'
-
-const DATE_KEYS = [
-  'createdAt',
-  'updatedAt',
-  'user.last_login',
-  'refundDate',
-  'scheduling',
-  'startDate',
-  'endDate'
-]
+const {
+  PICK_FIELDS,
+  OR_FILTER_OP,
+  AND_FILTER_OP,
+  EQ_FILTER_OP,
+  BETWEEN_FILTER_OP,
+  DATE_KEYS,
+  DEFAULT_LIMIT,
+  DEFAULT_ORDINATION_FIELD,
+  DEFAULT_ORDINATION_TYPE,
+  DEFAULT_PAGE,
+  IN_FILTER_OP,
+  LIKE_FILTER_OP
+} = require('./fields')
 
 const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions && clone(params.requestOptions)
-  const user = params.user && clone(params.user)
-
   delete params.requestOptions
-  delete params.user
 
   if (!isPlainObject(options)) {
     return payload
@@ -77,10 +61,6 @@ const defaultMergePayload = (payload, params) => {
 
   where[AND_FILTER_OP] = []
   where[FILTER_OP_IN_LIKE_CLAUSE] = []
-
-  if (user && user.providerId) {
-    where.providerId = user.providerId
-  }
 
   if (isPlainObject(options.filters) && keys(options.filters).length) {
     const group = createWhereClauseGroup(EQ_FILTER_OP, options.filters)
