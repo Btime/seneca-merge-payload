@@ -31,7 +31,6 @@ export default {
     expected: {
       where: {
         name: 'Btime Team',
-        enabled: true,
         deleted: false,
         $and: [
           {
@@ -72,7 +71,8 @@ export default {
     payload: {
       values: {
         where: {
-          name: 'Btime Team'
+          name: 'Btime Team',
+          enabled: true
         }
       },
       requestOptions: {
@@ -89,6 +89,7 @@ export default {
         }
       }
     },
+
     expected: {
       where: {
         name: 'Btime Team',

@@ -17,6 +17,26 @@ const {
   LIKE_FILTER_OP
 } = require('./fields')
 
+const SenecaMergePayload = (payload, params, method = 'default') => {
+  const isValid = Joi.validate(_.pick(params, PICK_FIELDS), Schema)
+
+  if (!_.isPlainObject(payload) || isValid.error) {
+    return payload
+  }
+
+  const mergeMap = {
+    default: defaultMergePayload
+  }
+
+  const caller = mergeMap[method]
+
+  if (!_.isFunction(caller)) {
+    return payload
+  }
+
+  return caller(payload, params)
+}
+
 const defaultMergePayload = (payload, params) => {
   const options = params.requestOptions && _.clone(params.requestOptions)
   delete params.requestOptions
@@ -45,8 +65,11 @@ const defaultMergePayload = (payload, params) => {
   const deleted = _.get(payload, 'where.deleted')
 
   const where = {
-    enabled: enabled !== undefined ? enabled : true,
     deleted: deleted !== undefined ? deleted : false
+  }
+
+  if (enabled !== undefined) {
+    where.enabled = enabled
   }
 
   where[AND_FILTER_OP] = []
@@ -132,26 +155,6 @@ const transformValueByOperator = (operator, value) => {
 
 const transformLikeValue = (value) => {
   return `%${value}%`
-}
-
-const SenecaMergePayload = (payload, params, method = 'default') => {
-  const isValid = Joi.validate(_.pick(params, PICK_FIELDS), Schema)
-
-  if (!_.isPlainObject(payload) || isValid.error) {
-    return payload
-  }
-
-  const mergeMap = {
-    default: defaultMergePayload
-  }
-
-  const caller = mergeMap[method]
-
-  if (!_.isFunction(caller)) {
-    return payload
-  }
-
-  return caller(payload, params)
 }
 
 export default SenecaMergePayload

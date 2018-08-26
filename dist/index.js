@@ -34,6 +34,28 @@ var _require = require('./fields'),
     IN_FILTER_OP = _require.IN_FILTER_OP,
     LIKE_FILTER_OP = _require.LIKE_FILTER_OP;
 
+var SenecaMergePayload = function SenecaMergePayload(payload, params) {
+  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'default';
+
+  var isValid = _joi2.default.validate(_.pick(params, PICK_FIELDS), _schema2.default);
+
+  if (!_.isPlainObject(payload) || isValid.error) {
+    return payload;
+  }
+
+  var mergeMap = {
+    default: defaultMergePayload
+  };
+
+  var caller = mergeMap[method];
+
+  if (!_.isFunction(caller)) {
+    return payload;
+  }
+
+  return caller(payload, params);
+};
+
 var defaultMergePayload = function defaultMergePayload(payload, params) {
   var options = params.requestOptions && _.clone(params.requestOptions);
   delete params.requestOptions;
@@ -55,9 +77,12 @@ var defaultMergePayload = function defaultMergePayload(payload, params) {
   var deleted = _.get(payload, 'where.deleted');
 
   var where = {
-    enabled: enabled !== undefined ? enabled : true,
     deleted: deleted !== undefined ? deleted : false
   };
+
+  if (enabled !== undefined) {
+    where.enabled = enabled;
+  }
 
   where[AND_FILTER_OP] = [];
   where[FILTER_OP_IN_LIKE_CLAUSE] = [];
@@ -135,28 +160,6 @@ var transformValueByOperator = function transformValueByOperator(operator, value
 
 var transformLikeValue = function transformLikeValue(value) {
   return '%' + value + '%';
-};
-
-var SenecaMergePayload = function SenecaMergePayload(payload, params) {
-  var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'default';
-
-  var isValid = _joi2.default.validate(_.pick(params, PICK_FIELDS), _schema2.default);
-
-  if (!_.isPlainObject(payload) || isValid.error) {
-    return payload;
-  }
-
-  var mergeMap = {
-    default: defaultMergePayload
-  };
-
-  var caller = mergeMap[method];
-
-  if (!_.isFunction(caller)) {
-    return payload;
-  }
-
-  return caller(payload, params);
 };
 
 exports.default = SenecaMergePayload;
