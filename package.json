@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/Bsociety/seneca-merge-payload.git#readme",
   "dependencies": {
-    "btime-schema-validate-package": "github:Btime/btime-schema-validate-package#database-refactoring",
+    "btime-schema-validate-package": "github:Btime/btime-schema-validate-package",
     "joi": "^8.4.1",
     "lodash": "^4.13.1",
     "seneca": "^3.4.3"
