@@ -1,49 +1,26 @@
-import {
-  isPlainObject,
-  isFunction,
-  isArray,
-  merge,
-  uniq,
-  keys,
-  get,
-  pick,
-  clone
-} from 'lodash'
+import * as _ from 'lodash'
 import Joi from 'joi'
 import Schema from './schema'
 
-const PICK_FIELDS = [
-  'user',
-  'requestOptions'
-]
-
-const OR_FILTER_OP = '$or'
-const AND_FILTER_OP = '$and'
-const EQ_FILTER_OP = '$eq'
-const LIKE_FILTER_OP = '$like'
-const IN_FILTER_OP = '$in'
-const BETWEEN_FILTER_OP = '$between'
-
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 25
-
-const DEFAULT_ORDINATION_FIELD = 'createdAt'
-const DEFAULT_ORDINATION_TYPE = 'DESC'
-
-const DATE_KEYS = [
-  'createdAt',
-  'updatedAt',
-  'user.last_login',
-  'refundDate',
-  'scheduling',
-  'startDate',
-  'endDate'
-]
+const {
+  PICK_FIELDS,
+  OR_FILTER_OP,
+  AND_FILTER_OP,
+  EQ_FILTER_OP,
+  BETWEEN_FILTER_OP,
+  DATE_KEYS,
+  DEFAULT_LIMIT,
+  DEFAULT_ORDINATION_FIELD,
+  DEFAULT_ORDINATION_TYPE,
+  DEFAULT_PAGE,
+  IN_FILTER_OP,
+  LIKE_FILTER_OP
+} = require('./fields')
 
 const SenecaMergePayload = (payload, params, method = 'default') => {
-  const isValid = Joi.validate(pick(params, PICK_FIELDS), Schema)
+  const isValid = Joi.validate(_.pick(params, PICK_FIELDS), Schema)
 
-  if (!isPlainObject(payload) || isValid.error) {
+  if (!_.isPlainObject(payload) || isValid.error) {
     return payload
   }
 
@@ -53,7 +30,7 @@ const SenecaMergePayload = (payload, params, method = 'default') => {
 
   const caller = mergeMap[method]
 
-  if (!isFunction(caller)) {
+  if (!_.isFunction(caller)) {
     return payload
   }
 
@@ -61,35 +38,31 @@ const SenecaMergePayload = (payload, params, method = 'default') => {
 }
 
 const defaultMergePayload = (payload, params) => {
-  const options = params.requestOptions && clone(params.requestOptions)
-  const user = params.user && clone(params.user)
-
+  const options = params.requestOptions && _.clone(params.requestOptions)
   delete params.requestOptions
-  delete params.user
 
-  if (!isPlainObject(options)) {
+  if (!_.isPlainObject(options)) {
     return payload
   }
 
   const FILTER_OP_IN_LIKE_CLAUSE = options.likeOperator &&
-    options.likeOperator === OR_FILTER_OP.substr(1)
-      ? OR_FILTER_OP
-      : AND_FILTER_OP
+  options.likeOperator === OR_FILTER_OP.substr(1)
+    ? OR_FILTER_OP
+    : AND_FILTER_OP
 
   payload.order = [
     [DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]
   ]
 
-  if (isArray(options.fields) && options.fields.length) {
-    payload = merge(payload, {
-      attributes: uniq(
+  if (_.isArray(options.fields) && options.fields.length) {
+    payload = _.merge(payload, {
+      attributes: _.uniq(
         (payload.attributes || []).concat(options.fields)
       )
     })
   }
-
-  const enabled = get(payload, 'where.enabled')
-  const deleted = get(payload, 'where.deleted')
+  const enabled = _.get(payload, 'where.enabled')
+  const deleted = _.get(payload, 'where.deleted')
 
   const where = {
     deleted: deleted !== undefined ? deleted : false
@@ -102,30 +75,26 @@ const defaultMergePayload = (payload, params) => {
   where[AND_FILTER_OP] = []
   where[FILTER_OP_IN_LIKE_CLAUSE] = []
 
-  if (user && user.providerId) {
-    where.providerId = user.providerId
-  }
-
-  if (isPlainObject(options.filters) && keys(options.filters).length) {
+  if (_.isPlainObject(options.filters) && _.keys(options.filters).length) {
     const group = createWhereClauseGroup(EQ_FILTER_OP, options.filters)
     where[AND_FILTER_OP] = where[AND_FILTER_OP].concat(group)
   }
 
-  if (isPlainObject(options.like) && keys(options.like).length) {
+  if (_.isPlainObject(options.like) && _.keys(options.like).length) {
     const group = createWhereClauseGroup(LIKE_FILTER_OP, options.like)
     where[FILTER_OP_IN_LIKE_CLAUSE] = where[FILTER_OP_IN_LIKE_CLAUSE].concat(group)
   }
 
-  payload = merge(payload, { where })
+  payload = _.merge(payload, { where })
 
-  if (isPlainObject(options.paginate)) {
+  if (_.isPlainObject(options.paginate)) {
     const page = options.paginate.page || DEFAULT_PAGE
     const limit = options.paginate.limit || DEFAULT_LIMIT
     const offset = limit * (page - 1)
-    payload = merge(payload, { limit, offset })
+    payload = _.merge(payload, { limit, offset })
   }
 
-  if (isPlainObject(options.ordination)) {
+  if (_.isPlainObject(options.ordination)) {
     const order = [
       [
         options.ordination.field,
@@ -139,7 +108,7 @@ const defaultMergePayload = (payload, params) => {
       order[0].unshift({ entity, as: entity })
     }
 
-    payload = merge(payload, { order })
+    payload = _.merge(payload, { order })
   }
 
   return payload
@@ -170,11 +139,11 @@ const createWhereClauseGroup = (operator, values) => {
 }
 
 const getOperatorByValue = (value, operator) => {
-  if (isArray(value) && operator === BETWEEN_FILTER_OP) {
+  if (_.isArray(value) && operator === BETWEEN_FILTER_OP) {
     return operator
   }
 
-  return !isArray(value) && operator || IN_FILTER_OP
+  return !_.isArray(value) && operator || IN_FILTER_OP
 }
 
 const transformValueByOperator = (operator, value) => {

@@ -6,25 +6,19 @@ export default {
     payload: {
       values: {
         where: {
-          name: 'Felipe Barros Cruz'
+          name: 'Btime Team'
         },
         attributes: ['name']
-      },
-      user: {
-        id: 1,
-        name: 'Felipe Barros',
-        providerId: 1
       },
       requestOptions: {
         fields: ['email'],
         filters: {
-          userId: 1,
-          email: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br'],
+          email: ['team@btime.com.br', 'team@btime.io'],
           createdAt: ['2018-06-01', '2018-08-01']
         },
         like: {
-          name: 'Fel',
-          provider: 'BTi'
+          name: 'Tea',
+          email: 'btime'
         },
         likeOperator: 'or',
         paginate: {
@@ -36,18 +30,12 @@ export default {
 
     expected: {
       where: {
-        name: 'Felipe Barros Cruz',
+        name: 'Btime Team',
         deleted: false,
-        providerId: 1,
         $and: [
           {
-            userId: {
-              $eq: 1
-            }
-          },
-          {
             email: {
-              $in: ['felipebarroscruz@btime.com.br', 'felipe@btime.com.br']
+              $in: ['team@btime.com.br', 'team@btime.io']
             }
           },
           {
@@ -59,12 +47,12 @@ export default {
         $or: [
           {
             name: {
-              $like: '%Fel%'
+              $like: '%Tea%'
             }
           },
           {
-            provider: {
-              $like: '%BTi%'
+            email: {
+              $like: '%btime%'
             }
           }
         ]
@@ -83,14 +71,9 @@ export default {
     payload: {
       values: {
         where: {
-          name: 'Felipe Barros Cruz',
-          enabled: false
+          name: 'Btime Team',
+          enabled: true
         }
-      },
-      user: {
-        id: 1,
-        name: 'Felipe Barros',
-        providerId: 1
       },
       requestOptions: {
         filters: {
@@ -109,10 +92,9 @@ export default {
 
     expected: {
       where: {
-        name: 'Felipe Barros Cruz',
+        name: 'Btime Team',
+        enabled: true,
         deleted: false,
-        enabled: false,
-        providerId: 1,
         $and: [
           {
             updatedAt: {
