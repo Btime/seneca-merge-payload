@@ -1,6 +1,6 @@
-import * as _ from 'lodash'
-import Joi from 'joi'
-import Schema from './schema'
+const _ = require('lodash')
+const Joi = require('joi')
+const Schema = require('./schema')
 
 const {
   PICK_FIELDS,
@@ -51,7 +51,7 @@ const defaultMergePayload = (payload, params) => {
     : AND_FILTER_OP
 
   payload.order = [
-    [DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE]
+    [ DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE ]
   ]
 
   if (_.isArray(options.fields) && options.fields.length) {
@@ -161,4 +161,4 @@ const transformLikeValue = (value) => {
   return `%${value}%`
 }
 
-export default SenecaMergePayload
+module.exports.default = SenecaMergePayload

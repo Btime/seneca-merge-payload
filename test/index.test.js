@@ -1,14 +1,11 @@
-import { script } from 'lab'
-import { expect } from 'code'
-import {
-  isPlainObject,
-  isEqual
-} from 'lodash'
-import SenecaMergePayload from '../index'
-import Mock from './mock'
-const lab = exports.lab = script()
-const describe = lab.describe
-const it = lab.it
+/* eslint-env mocha */
+
+const chai = require('chai')
+const expect = chai.expect
+
+const { isPlainObject, isEqual } = require('lodash')
+const SenecaMergePayload = require('../index')
+const Mock = require('./mock')
 
 describe('Seneca Merge Payload', () => {
   it('Expect merge validate with default method and requestOptions',

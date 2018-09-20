@@ -9,13 +9,6 @@ This package is responsible for formatting the queries used by Entity micro serv
 ```bash
 npm i
 ```
-
-### Build
-
-```bash
-npm run build
-```
-
 ## Usage
 
 ### Installing

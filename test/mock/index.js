@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   /**
    * @description: Mock for default befavior
    */
@@ -8,13 +8,13 @@ export default {
         where: {
           name: 'Btime Team'
         },
-        attributes: ['name']
+        attributes: [ 'name' ]
       },
       requestOptions: {
-        fields: ['email'],
+        fields: [ 'email' ],
         filters: {
-          email: ['team@btime.com.br', 'team@btime.io'],
-          createdAt: ['2018-06-01', '2018-08-01']
+          email: [ 'team@btime.com.br', 'team@btime.io' ],
+          createdAt: [ '2018-06-01', '2018-08-01' ]
         },
         like: {
           name: 'Tea',
@@ -35,12 +35,12 @@ export default {
         $and: [
           {
             email: {
-              $in: ['team@btime.com.br', 'team@btime.io']
+              $in: [ 'team@btime.com.br', 'team@btime.io' ]
             }
           },
           {
             createdAt: {
-              $between: ['2018-06-01', '2018-08-01']
+              $between: [ '2018-06-01', '2018-08-01' ]
             }
           }
         ],
@@ -57,7 +57,7 @@ export default {
           }
         ]
       },
-      attributes: ['name', 'email'],
+      attributes: [ 'name', 'email' ],
       order: [ [ 'createdAt', 'DESC' ] ],
       limit: 10,
       offset: 0
@@ -77,7 +77,7 @@ export default {
       },
       requestOptions: {
         filters: {
-          updatedAt: ['2018-06-01', '2018-08-01']
+          updatedAt: [ '2018-06-01', '2018-08-01' ]
         },
         paginate: {
           page: 1,
@@ -98,13 +98,13 @@ export default {
         $and: [
           {
             updatedAt: {
-              $between: ['2018-06-01', '2018-08-01']
+              $between: [ '2018-06-01', '2018-08-01' ]
             }
           }
         ]
       },
       order: [
-        [{ entity: 'customer', as: 'customer' }, 'customer.name', 'DESC']
+        [ { entity: 'customer', as: 'customer' }, 'customer.name', 'DESC' ]
       ],
       limit: 25,
       offset: 0
