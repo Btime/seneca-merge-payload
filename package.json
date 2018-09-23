@@ -10,8 +10,9 @@
     "src"
   ],
   "scripts": {
-    "test": "LOG_LEVEL=error; mocha test/*.test.js --exit --timeout 555555",
-    "coverage": "LOG_LEVEL=error; nyc mocha --timeout 555555",
+    "test": "LOG_LEVEL=error mocha test/*.test.js --exit --timeout 555555",
+    "coverage": "LOG_LEVEL=error nyc mocha --exit --timeout 555555",
+    "htmlCoverage": "nyc --reporter=html mocha --exit --timeout 555555",
     "fixStyle": "./node_modules/eslint/bin/eslint.js ./ --fix"
   },
   "husky": {
