@@ -1,6 +1,6 @@
 module.exports = {
   /**
-   * @description: Mock for default befavior
+   * @description: Mock for default behavior
    */
   default: {
     payload: {
@@ -108,6 +108,34 @@ module.exports = {
       ],
       limit: 25,
       offset: 0
+    }
+  },
+
+  /**
+   * @description Mock for date filter in an association
+   */
+  dateAssociationFilter: {
+    payload: {
+      values: {},
+      requestOptions: {
+        filters: {
+          'entity.createdAt': [ '2018-06-01', '2018-08-01' ]
+        }
+      }
+    },
+
+    expected: {
+      where: {
+        deleted: false,
+        $and: [
+          {
+            'entity.createdAt': {
+              $between: [ '2018-06-01', '2018-08-01' ]
+            }
+          }
+        ]
+      },
+      order: [ [ 'createdAt', 'DESC' ] ]
     }
   }
 }

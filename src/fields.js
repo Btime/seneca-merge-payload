@@ -20,6 +20,7 @@ module.exports.DATE_KEYS = [
   'updatedAt',
   'lastLogin',
   'refundDate',
+  'refundPaidDate',
   'scheduling',
   'startDate',
   'endDate'

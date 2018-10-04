@@ -26,4 +26,14 @@ describe('Seneca Merge Payload', () => {
       expect(isEqual(result, Mock.composedNameForAnEntity.expected))
         .to.be.equal(true)
     })
+
+  it('Expect merge validate with filter of date in an association',
+    () => {
+      const payload = Mock.dateAssociationFilter.payload
+      const result = SenecaMergePayload(payload.values, payload)
+
+      expect(isPlainObject(result)).to.be.equal(true)
+      expect(isEqual(result, Mock.dateAssociationFilter.expected))
+        .to.be.equal(true)
+    })
 })

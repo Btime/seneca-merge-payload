@@ -125,9 +125,11 @@ const createWhereClauseGroup = (operator, values) => {
   for (let key in values) {
     sequelizeOperator = operator
 
-    if (DATE_KEYS.indexOf(key) >= 0) {
-      sequelizeOperator = BETWEEN_FILTER_OP
-    }
+    DATE_KEYS.forEach(dateKey => {
+      if (key.match(dateKey)) {
+        sequelizeOperator = BETWEEN_FILTER_OP
+      }
+    })
 
     const value = values[key]
     sequelizeOperator = getOperatorByValue(value, sequelizeOperator)
