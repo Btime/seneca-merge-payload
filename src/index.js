@@ -111,10 +111,6 @@ const defaultMergePayload = (payload, params) => {
     payload = _.merge(payload, { order })
   }
 
-  if (params.getAddress) {
-    payload.where.userId = params.credentials.id
-  }
-
   return payload
 }
 
