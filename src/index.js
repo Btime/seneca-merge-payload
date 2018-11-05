@@ -54,13 +54,12 @@ const defaultMergePayload = (payload, params) => {
     [ DEFAULT_ORDINATION_FIELD, DEFAULT_ORDINATION_TYPE ]
   ]
 
-  if (_.isArray(options.fields) && options.fields.length) {
-    payload = _.merge(payload, {
-      attributes: _.uniq(
-        (payload.attributes || []).concat(options.fields)
-      )
-    })
+  const attributes = defineAttributes(payload, options)
+
+  if (attributes && attributes.length) {
+    payload.attributes = attributes
   }
+
   const enabled = _.get(payload, 'where.enabled')
   const deleted = _.get(payload, 'where.deleted')
 
@@ -112,6 +111,25 @@ const defaultMergePayload = (payload, params) => {
   }
 
   return payload
+}
+
+const defineAttributes = (payload, options) => {
+  const fields = Array.isArray(options.fields) ? options.fields : []
+
+  if (_.isPlainObject(payload.attributes)) {
+    const include = _.uniq((payload.attributes.include || []).concat(fields))
+    const exclude = payload.attributes.exclude || []
+
+    if (include.length) {
+      return _.difference(include, exclude)
+    }
+    if (!include.length && exclude.length) {
+      return { exclude }
+    }
+  }
+  return _.uniq(
+    (payload.attributes || []).concat(fields)
+  )
 }
 
 const createWhereClauseGroup = (operator, values) => {
