@@ -123,7 +123,7 @@ const defineAttributes = (payload, options) => {
     if (include.length) {
       return _.difference(include, exclude)
     }
-    if (!include.length && exclude.length) {
+    if (exclude.length) {
       return { exclude }
     }
   }
