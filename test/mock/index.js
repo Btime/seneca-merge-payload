@@ -137,5 +137,101 @@ module.exports = {
       },
       order: [ [ 'createdAt', 'DESC' ] ]
     }
+  },
+
+  /**
+   * @description Mock for payload with a invalid format
+   */
+  invalidFormatForPayload: {
+    payload: [ 'not-a-valid-object' ],
+    expected: [ 'not-a-valid-object' ]
+  },
+
+  /**
+   * @description Mock for payload with desired attributes via "include"
+   */
+  attributesWithInclude: {
+    payload: {
+      values: {
+        attributes: { include: [ 'email', 'name' ] }
+      },
+      requestOptions: {
+        fields: [ 'nationalRegistration', 'createdAt' ]
+      }
+    },
+
+    expected: {
+      attributes: [ 'email', 'name', 'nationalRegistration', 'createdAt' ],
+      order: [ [ 'createdAt', 'DESC' ] ],
+      where: { deleted: false, '$and': [] }
+    }
+  },
+
+  /**
+   * @description Mock for payload with unwanted attributes via "exclude"
+   */
+  attributesWithExclude: {
+    payload: {
+      values: {
+        attributes: { exclude: [ 'password' ] }
+      },
+      requestOptions: {
+        fields: [ 'name', 'email', 'password' ]
+      }
+    },
+
+    expected: {
+      attributes: [ 'name', 'email' ],
+      order: [ [ 'createdAt', 'DESC' ] ],
+      where: { deleted: false, '$and': [] }
+    }
+  },
+
+  /**
+   * @description Mock for payload with both "include" and "exclude" options
+   * for attributes selection
+   */
+  attributesWithIncludeAndExclude: {
+    payload: {
+      values: {
+        attributes: {
+          include: [ 'id', 'name', 'email' ],
+          exclude: [ 'password', 'deletedAt', 'deletedBy' ]
+        }
+      },
+      requestOptions: {
+        fields: [ 'password', 'name' ]
+      }
+    },
+
+    expected: {
+      attributes: [ 'id', 'name', 'email' ],
+      order: [ [ 'createdAt', 'DESC' ] ],
+      where: { deleted: false, '$and': [] }
+    }
+  },
+
+  /**
+   * @description Mock for payload with "exclude" option for
+   * attribute filtering, with no "fields" at requestOptions
+   */
+  attributesWithExcludeOnly: {
+    payload: {
+      values: {
+        attributes: { exclude: [ 'email', 'name' ] }
+      },
+      requestOptions: {
+        filters: { email: 'team@btime.io' }
+      }
+    },
+
+    expected: {
+      attributes: { exclude: [ 'email', 'name' ] },
+      order: [ [ 'createdAt', 'DESC' ] ],
+      where: {
+        deleted: false,
+        $and: [ { email: { $eq: 'team@btime.io' } } ]
+      }
+    }
   }
 }
